@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+	
+	<!-- 扫描包中注解标注的类 -->
+	<context:component-scan base-package="service,dao"></context:component-scan>
+	
+	
+	<!-- 引入配置文件-->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:database.properties</value>
+		</property>
+	</bean>
+	 
+<!--	1. 存数据时：useUnicode=true-->
+<!---->
+<!--     数据库在存放项目数据的时候会先用UTF-8格式将数据解码成字节码，然后再将解码后的字节码重新使用GBK编码存放到数据库中。-->
+<!---->
+<!--	2.取数据时：characterEncoding=UTF-8-->
+<!---->
+<!--     在从数据库中取数据的时候，数据库会先将数据库中的数据按GBK格式解码成字节码，然后再将解码后的字节码重新按UTF-8格式编码数据，最后再将数据返回给客户端。-->
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+        destroy-method="close">
+        <property name="driverClassName" value="${driverT170}" />
+        <property name="url" value="${url}"></property>
+        <property name="username" value="${name}" />
+        <property name="password" value="${pwd}" />
+    </bean>
+    
+     <!-- 配置数据源的连接
+     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+     	<property name="jndiName">
+     		<value>java:comp/env/jdbc/smbmsT170</value>
+     	</property>
+     </bean>
+      -->
+     
+    
+     <!-- 配置SqlSessionFactoryBean -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 引用数据源组件 -->
+        <property name="dataSource" ref="dataSource" />
+        <!-- 引用MyBatis配置文件中的配置 -->
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        <!-- 配置SQL映射文件信息 -->
+        <property name="mapperLocations">
+            <list>
+                <value>classpath:dao/*.xml</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!--
+    	配置声明式事务 
+    	1:定义事务管理器对象
+    -->
+    <bean id="tx" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource" ref="dataSource"></property>
+    </bean>
+    
+    
+    
+    <!-- 
+    	指定事务管理器对象，设置对应事务的属性
+     -->
+    <tx:advice id="txAdvice" transaction-manager="tx">
+    	<tx:attributes>
+    		<tx:method name="find*" read-only="true"/>
+    	</tx:attributes>
+    </tx:advice>
+    
+    
+    <!-- 事务管理控制哪一层 -->
+    <aop:config>
+		<aop:pointcut id="cc" expression="execution(* service..*.*(..))" />
+	
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="cc"/>
+	</aop:config>
+    
+    
+</beans>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+	"
+	>
+	
+	<bean id="user" class="entity.User">
+		<property name="p">
+			<props>
+				<prop key="zq">足球</prop>
+				<prop key="lq">蓝球</prop>
+			</props>
+		</property>
+<!--		<property name="userName">-->
+<!--			<value>-->
+<!--				<![CDATA[1<3 1>0 && (( ^^]]>-->
+<!--			</value>-->
+<!--		</property>-->
+	</bean>
+	
+<!--	<bean id="user" class="entity.User" p:userName="张国老" p:gender="2" p:dept-ref="dept"></bean>-->
+<!--	-->
+	<bean id="dept" class="entity.Dept"></bean>
+	
+	<!-- 构造注入 
+	<bean id="user" class="entity.User">
+		<constructor-arg index="0">
+			<value>李四</value>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<value>0</value>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<ref local="dept" />或<bean class="entity.Dept">
+		</constructor-arg>
+	</bean>
+	-->
+		
+</beans>

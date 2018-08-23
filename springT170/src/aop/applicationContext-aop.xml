@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+	"
+	>
+	
+	
+		<!-- dao-->
+	<bean id="userDao" class="dao.impl.UserDaoImpl"></bean>
+	
+	
+	<!-- service-->
+	<bean id="userService" class="service.impl.UserServiceImpl">
+		<!-- 第三步 -->
+		<property name="userDao" ref="userDao"></property>
+	</bean>
+	
+	
+	<!-- aop -->
+	<bean id="errorLogger" class="aop.AroundLogger"></bean>
+	
+	<aop:config>
+		<aop:pointcut id="cc" expression="execution(* service..*.*(..))" />
+		
+		<aop:aspect ref="errorLogger">
+<!--			<aop:after-throwing method="afterThrowingT170" pointcut-ref="cc" throwing="e"/>-->
+		
+			<aop:around method="aroundLogger" pointcut-ref="cc"/>
+		</aop:aspect>
+		
+	</aop:config>
+	
+	
+</beans>

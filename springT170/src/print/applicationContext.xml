@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+	>
+	
+	<bean id="box170" class="print.impl.BoxImpl"></bean>
+	<bean id="page170" class="print.impl.PageImpl"></bean>
+	
+	
+	<!-- 
+		Print p = new Print();
+	-->
+	<bean id="p" class="print.Print">
+		<property name="box" ref="box170"></property>
+		<property name="page" ref="page170"></property>
+	</bean>
+	
+</beans>

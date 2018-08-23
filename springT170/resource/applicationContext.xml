@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+	"
+	>
+	
+	<!-- dao-->
+	<bean id="userDao" class="dao.impl.UserDaoImpl"></bean>
+	
+	
+	<!-- service-->
+	<bean id="userService" class="service.impl.UserServiceImpl">
+		<!-- 第三步 -->
+		<property name="userDao" ref="userDao"></property>
+	</bean>
+	
+	
+	
+	<!-- aop -->
+	<bean id="aopLogger" class="aop.AopLogger"></bean>
+	
+	<aop:config>
+		<aop:pointcut id="cc" expression="execution(* service..*.*(..))" />
+		
+		<aop:aspect ref="aopLogger">
+			<aop:before method="before" pointcut-ref="cc"/>
+			<aop:after-returning method="afterReturning" pointcut-ref="cc" returning="result"/>
+		</aop:aspect>
+		
+	</aop:config>
+	
+	
+	<!-- 
+		HelloSpring helloSpring = new HelloSpring(); 
+		等同于
+		<bean id="helloSpring" class="helloSpring.HelloSpring"></bean>
+		
+		id="helloSpring" 对象名helloSpring
+		class="helloSpring.HelloSpring"  类的全路径
+	-->
+	
+	<bean id="helloSpring" class="helloSpring.HelloSpring">
+		<!-- 
+			who 对应类中的setWho()方法，并不是对应属性who。
+		 -->
+		<property name="who">
+			<value>......哈哈......</value>
+		</property>
+	</bean>
+	
+</beans>
